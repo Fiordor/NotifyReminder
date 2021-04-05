@@ -29,7 +29,13 @@ public class DatabaseAddNotify extends Thread {
         }
 
         NotifyDatabase.getInstance(weakReference.get()).notifyDao().addNotify(notify);
-        Toast.makeText(weakReference.get(), R.string.save, Toast.LENGTH_SHORT).show();
-        weakReference.get().onBackPressed();
+
+        weakReference.get().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(weakReference.get(), R.string.save, Toast.LENGTH_SHORT).show();
+                weakReference.get().onBackPressed();
+            }
+        });
     }
 }

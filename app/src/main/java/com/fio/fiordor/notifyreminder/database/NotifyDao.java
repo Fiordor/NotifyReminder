@@ -17,7 +17,7 @@ public interface NotifyDao {
     void addNotify(Notify notify);
 
     @Delete
-    void deleteNotify(int id);
+    void deleteNotify(Notify notify);
 
     @Query("SELECT * FROM notify_database")
     List<Notify> loadAllNotifies();

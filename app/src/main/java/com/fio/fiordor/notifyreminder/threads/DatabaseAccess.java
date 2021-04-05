@@ -1,5 +1,7 @@
 package com.fio.fiordor.notifyreminder.threads;
 
+import android.util.Log;
+
 import com.fio.fiordor.notifyreminder.ListActivity;
 import com.fio.fiordor.notifyreminder.database.NotifyDao;
 import com.fio.fiordor.notifyreminder.database.NotifyDatabase;
@@ -28,30 +30,32 @@ public class DatabaseAccess extends Thread implements NotifyDao {
     @Override
     public void addNotify(Notify notify) {
         this.notify = notify;
+        selection = ADD_NOTIFY;
         start();
     }
 
     @Override
-    public void deleteNotify(int id) {
-        this.id = id;
+    public void deleteNotify(Notify notify) {
+        this.notify = notify;
+        selection = DELETE_NOTIFY;
         start();
     }
 
     @Override
     public List<Notify> loadAllNotifies() {
         start();
+        selection = LOAD_ALL_NOTIFIES;
         return null;
     }
 
     @Override
     public void run() {
-
         switch (selection) {
             case ADD_NOTIFY :
                 NotifyDatabase.getInstance(weakReference.get()).notifyDao().addNotify(notify);
                 break;
             case DELETE_NOTIFY :
-                NotifyDatabase.getInstance(weakReference.get()).notifyDao().deleteNotify(id);
+                NotifyDatabase.getInstance(weakReference.get()).notifyDao().deleteNotify(notify);
                 break;
             case LOAD_ALL_NOTIFIES :
                 List<Notify> notifies = NotifyDatabase.getInstance(weakReference.get()).notifyDao().loadAllNotifies();

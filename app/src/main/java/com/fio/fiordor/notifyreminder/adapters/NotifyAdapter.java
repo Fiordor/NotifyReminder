@@ -124,7 +124,7 @@ public class NotifyAdapter extends RecyclerView.Adapter<NotifyAdapter.ViewHolder
         }
 
         public void setTime(int hour, int minute) {
-            this.time.setText(String.format(Locale.getDefault(), "%d:%d", hour, minute));
+            this.time.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
         }
 
         public void setText(String text) {

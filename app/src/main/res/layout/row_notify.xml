@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/tvRowTitle"
@@ -18,55 +18,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tvRowYear"
+        android:id="@+id/tvUselessDay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="0000"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvUselessYear" />
-
-    <TextView
-        android:id="@+id/tvRowText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toStartOf="@+id/tvRowTime"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tvRowTime" />
-
-    <TextView
-        android:id="@+id/tvRowTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvRowYear" />
-
-    <TextView
-        android:id="@+id/tvRowMonth"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="00"
-        app:layout_constraintEnd_toStartOf="@+id/tvRowYear"
-        app:layout_constraintTop_toBottomOf="@+id/tvUselessMonth" />
-
-    <TextView
-        android:id="@+id/tvUselessYear"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="@string/year"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/day"
+        app:layout_constraintEnd_toStartOf="@+id/tvUselessMonth"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -80,6 +38,16 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/tvUselessYear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/year"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
         android:id="@+id/tvRowDay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -90,12 +58,47 @@
         app:layout_constraintTop_toBottomOf="@+id/tvUselessDay" />
 
     <TextView
-        android:id="@+id/tvUselessDay"
+        android:id="@+id/tvRowMonth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="@string/day"
-        app:layout_constraintEnd_toStartOf="@+id/tvUselessMonth"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="00"
+        app:layout_constraintEnd_toStartOf="@+id/tvRowYear"
+        app:layout_constraintTop_toBottomOf="@+id/tvUselessMonth" />
+
+    <TextView
+        android:id="@+id/tvRowYear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="0000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvUselessYear" />
+
+    <TextView
+        android:id="@+id/tvRowTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvRowYear" />
+
+    <TextView
+        android:id="@+id/tvRowText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvRowTime"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvRowTime" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
