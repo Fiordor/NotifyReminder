@@ -1,17 +1,22 @@
 package com.fio.fiordor.notifyreminder;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.fio.fiordor.notifyreminder.pojo.Notify;
+import com.fio.fiordor.notifyreminder.threads.DatabaseAddNotify;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -51,9 +56,18 @@ public class CreateActivity extends AppCompatActivity {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeZone.getDefault());
 
-        String defaultTitle = String.format(Locale.getDefault(), "Notify-%d:%d:%d-%d/%d/%d",
+        dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+        month = calendar.get(Calendar.MONTH) + 1;
+        year = calendar.get(Calendar.YEAR);
+
+        String date = String.format(Locale.getDefault(), "%s: %d, %s: %d, %s: %d",
+                getString(R.string.day), dayOfMonth, getString(R.string.month), month + 1, getString(R.string.year), year);
+
+        tvDate.setText(date);
+
+        String defaultTitle = String.format(Locale.getDefault(), "Notify-%02d:%02d:%02d-%d/%02d/%02d",
                 calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND),
-                calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
+                year, month, dayOfMonth);
 
         etTitle.setText(defaultTitle);
         
@@ -124,5 +138,27 @@ public class CreateActivity extends AppCompatActivity {
         }, defaultHour, defaultMinute, true);
 
         picker.show();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.just_save, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        if (item.getItemId() == R.id.imJustSave) {
+
+            DatabaseAddNotify add = new DatabaseAddNotify(this, new Notify(
+                    etTitle.getText().toString(), year, month, dayOfMonth, hourOfDay, minute, repeatMinute, etText.getText().toString()
+            ));
+            add.start();
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

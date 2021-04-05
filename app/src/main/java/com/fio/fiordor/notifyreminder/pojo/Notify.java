@@ -1,19 +1,35 @@
 package com.fio.fiordor.notifyreminder.pojo;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "notify_database")
 public class Notify {
 
+    @PrimaryKey
+    @ColumnInfo
     private int id;
+
+    @ColumnInfo
     private String title;
 
+    @ColumnInfo
     private int year;
+    @ColumnInfo
     private int month;
+    @ColumnInfo
     private int dayOfMonth;
 
+    @ColumnInfo
     private int hour;
+    @ColumnInfo
     private int minute;
 
+    @ColumnInfo
     private int repeatMinute;
 
+    @ColumnInfo
     private String text;
 
     public Notify(String title, int year, int month, int dayOfMonth, int hour, int minute, int repeatMinute, String text) {
