@@ -1,4 +1,4 @@
-package com.fio.fiordor.notifyreminder.adapters;
+package com.fio.fiordor.notifyreminder.customnotify;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -108,6 +108,7 @@ public class NotifyAdapter extends RecyclerView.Adapter<NotifyAdapter.ViewHolder
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
+                    onItemLongClickListener.onItemLongClickListener(getAdapterPosition());
                     return true;
                 }
             });

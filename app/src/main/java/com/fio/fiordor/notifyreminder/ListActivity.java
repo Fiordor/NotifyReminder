@@ -1,15 +1,18 @@
 package com.fio.fiordor.notifyreminder;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
-import com.fio.fiordor.notifyreminder.adapters.NotifyAdapter;
+import com.fio.fiordor.notifyreminder.customnotify.NotifyAdapter;
 import com.fio.fiordor.notifyreminder.pojo.Notify;
 import com.fio.fiordor.notifyreminder.threads.DatabaseAccess;
 
@@ -55,5 +58,27 @@ public class ListActivity extends AppCompatActivity implements NotifyAdapter.OnI
     @Override
     public void onItemLongClickListener(int position) {
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage(R.string.do_you_want_delete_notify);
+
+        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                Notify notify = adapter.getNotify(position);
+
+                DatabaseAccess databaseAccess = new DatabaseAccess((ListActivity) getParent());
+                databaseAccess.deleteNotify(notify);
+
+                adapter.remove(notify);
+
+                Toast.makeText(getBaseContext(), "borrado", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.setNegativeButton(android.R.string.no, null);
+
+        builder.show();
     }
 }

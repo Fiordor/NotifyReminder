@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NotifyReminder">
         <activity android:name=".CreateActivity"
-            android:parentActivityName=".ListActivity" />
+            android:parentActivityName=".ListActivity"/>
         <activity android:name=".ListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,6 +18,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver android:name=".customnotify.NotifyShow" android:enabled="true" android:exported="true" />
     </application>
 
 </manifest>

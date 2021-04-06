@@ -3,8 +3,12 @@ package com.fio.fiordor.notifyreminder;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -15,6 +19,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.fio.fiordor.notifyreminder.customnotify.NotifyShow;
 import com.fio.fiordor.notifyreminder.pojo.Notify;
 import com.fio.fiordor.notifyreminder.threads.DatabaseAddNotify;
 
@@ -57,19 +62,19 @@ public class CreateActivity extends AppCompatActivity {
         calendar.setTimeZone(TimeZone.getDefault());
 
         dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-        month = calendar.get(Calendar.MONTH) + 1;
+        month = calendar.get(Calendar.MONTH);
         year = calendar.get(Calendar.YEAR);
-
-        String date = String.format(Locale.getDefault(), "%s: %d, %s: %d, %s: %d",
-                getString(R.string.day), dayOfMonth, getString(R.string.month), month + 1, getString(R.string.year), year);
-
-        tvDate.setText(date);
 
         String defaultTitle = String.format(Locale.getDefault(), "Notify-%02d:%02d:%02d-%d/%02d/%02d",
                 calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND),
                 year, month, dayOfMonth);
 
         etTitle.setText(defaultTitle);
+
+        String date = String.format(Locale.getDefault(), "%s: %d, %s: %d, %s: %d",
+                getString(R.string.day), dayOfMonth, getString(R.string.month), month + 1, getString(R.string.year), year);
+
+        tvDate.setText(date);
         
         firstClick = false;
 
@@ -151,10 +156,19 @@ public class CreateActivity extends AppCompatActivity {
 
         if (item.getItemId() == R.id.imJustSave) {
 
-            DatabaseAddNotify add = new DatabaseAddNotify(this, new Notify(
-                    etTitle.getText().toString(), year, month, dayOfMonth, hourOfDay, minute, repeatMinute, etText.getText().toString()
-            ));
+            Notify notify = new Notify(etTitle.getText().toString(), year, month, dayOfMonth, hourOfDay, minute, repeatMinute, etText.getText().toString());
+
+            DatabaseAddNotify add = new DatabaseAddNotify(this, notify);
             add.start();
+
+            Calendar calendar = Calendar.getInstance(Locale.getDefault());
+            calendar.set(notify.getYear(), notify.getMonth(), notify.getDayOfMonth(), notify.getHour(), notify.getMinute());
+
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(this, NotifyShow.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
 
             return true;
         }
