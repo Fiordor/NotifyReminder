@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
@@ -14,6 +15,12 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.fio.fiordor.notifyreminder.ListActivity;
 import com.fio.fiordor.notifyreminder.R;
+import com.fio.fiordor.notifyreminder.database.NotifyDatabase;
+import com.fio.fiordor.notifyreminder.pojo.Notify;
+import com.fio.fiordor.notifyreminder.threads.DatabaseAccess;
+
+import java.util.Calendar;
+import java.util.Locale;
 
 public class NotifyShow extends BroadcastReceiver {
 
@@ -22,35 +29,36 @@ public class NotifyShow extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Toast.makeText(context, "Alarma", Toast.LENGTH_LONG).show();
+        int id = intent.getIntExtra("id", -1);
+        String title = intent.getStringExtra("title");
+        String text = intent.getStringExtra("text");
 
-
-        /*
-        EEror opening kernel wakelock stats for: wakeup34: Permission denied
-        para mi que falta algún tipo de permiso para la aplicación reciva la notificación de la alarma
-        y pueda lanzarse sola fuera de la app
-        * */
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Notify notify = NotifyDatabase.getInstance(context).notifyDao().getNotify(id);
+                if (notify != null) {
+                    NotifyDatabase.getInstance(context).notifyDao().deleteNotify(notify);
+                }
+            }
+        }).start();
 
         createNotificationChannel(context);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_baseline_check_24)
-                .setContentTitle(context.getString(R.string.app_name))
-                .setContentText(context.getText(R.string.save))
+                .setContentTitle(title)
+                .setContentText(text)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
 
-        //random int
-        int notificationId = 123123;
         Notification notification = builder.build();
 
+        notificationManagerCompat.notify(title.hashCode(), notification);
 
-
-        notificationManagerCompat.notify(notificationId, notification);
-
-        //Intento de lanzar activity pero falla
-        //Intent list = new Intent(context, ListActivity.class);
-        //context.startActivity(list);
+        //Intent open = context.getPackageManager().getLaunchIntentForPackage("NotifyReminder");
+        //open.addCategory(Intent.CATEGORY_LAUNCHER);
+        //context.startActivity(intent);
     }
 
     private void createNotificationChannel(Context context) {

@@ -22,4 +22,7 @@ public interface NotifyDao {
     @Query("SELECT * FROM notify_database")
     List<Notify> loadAllNotifies();
 
+    @Query("SELECT * FROM notify_database WHERE id = :id")
+    Notify getNotify(int id);
+
 }

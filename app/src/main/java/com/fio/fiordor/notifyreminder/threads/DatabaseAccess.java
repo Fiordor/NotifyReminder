@@ -15,6 +15,7 @@ public class DatabaseAccess extends Thread implements NotifyDao {
     private final int ADD_NOTIFY = 0;
     private final int DELETE_NOTIFY = 1;
     private final int LOAD_ALL_NOTIFIES = 2;
+    private final int GET_NOTIFY = 3;
 
     private int selection;
     private Notify notify;
@@ -43,8 +44,16 @@ public class DatabaseAccess extends Thread implements NotifyDao {
 
     @Override
     public List<Notify> loadAllNotifies() {
-        start();
         selection = LOAD_ALL_NOTIFIES;
+        start();
+        return null;
+    }
+
+    @Override
+    public Notify getNotify(int id) {
+        this.id = id;
+        selection = LOAD_ALL_NOTIFIES;
+        start();
         return null;
     }
 
@@ -56,6 +65,9 @@ public class DatabaseAccess extends Thread implements NotifyDao {
                 break;
             case DELETE_NOTIFY :
                 NotifyDatabase.getInstance(weakReference.get()).notifyDao().deleteNotify(notify);
+                break;
+            case GET_NOTIFY :
+                NotifyDatabase.getInstance(weakReference.get()).notifyDao().getNotify(id);
                 break;
             case LOAD_ALL_NOTIFIES :
                 List<Notify> notifies = NotifyDatabase.getInstance(weakReference.get()).notifyDao().loadAllNotifies();

@@ -162,15 +162,17 @@ public class CreateActivity extends AppCompatActivity {
             add.start();
 
             Calendar calendar = Calendar.getInstance(Locale.getDefault());
-            calendar.set(notify.getYear(), notify.getMonth(), notify.getDayOfMonth(), notify.getHour(), notify.getMinute());
+            calendar.set(notify.getYear(), notify.getMonth(), notify.getDayOfMonth(), notify.getHour(), notify.getMinute(), 0);
 
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             Intent intent = new Intent(this, NotifyShow.class);
+            intent.putExtra("id", notify.getId());
+            intent.putExtra("title", notify.getTitle());
+            intent.putExtra("text", notify.getText());
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
 
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
 
-            return true;
         }
 
         return super.onOptionsItemSelected(item);
