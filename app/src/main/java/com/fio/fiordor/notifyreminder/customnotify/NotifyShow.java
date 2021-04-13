@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -25,7 +26,7 @@ import java.util.Locale;
 
 public class NotifyShow extends BroadcastReceiver {
 
-    private final String CHANNEL_ID = "channel_id"; //random int
+    private final String CHANNEL_ID = "notify_channel_id";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -39,7 +40,9 @@ public class NotifyShow extends BroadcastReceiver {
             public void run() {
                 Notify notify = NotifyDatabase.getInstance(context).notifyDao().getNotify(id);
                 if (notify != null) {
+                    Log.d("show", "show before");
                     NotifyDatabase.getInstance(context).notifyDao().deleteNotify(notify);
+                    Log.d("show", "show after");
                 }
             }
         }).start();
@@ -60,8 +63,11 @@ public class NotifyShow extends BroadcastReceiver {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_baseline_check_24)
                 .setContentTitle(title)
-                .setContentText(text)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        if (text.trim().length() != 0) {
+            builder.setContentText(text);
+        }
 
         builder.setContentIntent(pendingIntent);
 

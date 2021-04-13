@@ -10,39 +10,47 @@ import com.fio.fiordor.notifyreminder.pojo.Notify;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-public class DatabaseAccess extends Thread implements NotifyDao {
+public class DatabaseAccess extends Thread {
 
-    private final int ADD_NOTIFY = 0;
-    private final int DELETE_NOTIFY = 1;
-    private final int LOAD_ALL_NOTIFIES = 2;
-    private final int GET_NOTIFY = 3;
+    public final int ADD_NOTIFY = 0;
+    public final int DELETE_NOTIFY = 1;
+    public final int LOAD_ALL_NOTIFIES = 2;
+    public final int GET_NOTIFY = 3;
+    public final int DELETE_NOTIFY_BY_ID = 4;
 
     private int selection;
     private Notify notify;
     private int id;
+    private boolean update;
 
     private WeakReference<ListActivity> weakReference;
 
     public DatabaseAccess(ListActivity weakReference) {
         this.weakReference = new WeakReference<>(weakReference);
         selection = -1;
+        update = false;
     }
 
-    @Override
-    public void addNotify(Notify notify) {
+    public void addNotify(Notify notify, boolean update) {
         this.notify = notify;
+        this.update = update;
         selection = ADD_NOTIFY;
         start();
     }
 
-    @Override
-    public void deleteNotify(Notify notify) {
+    public void deleteNotify(Notify notify, boolean update) {
         this.notify = notify;
+        this.update = update;
         selection = DELETE_NOTIFY;
         start();
     }
 
-    @Override
+    public void deleteNotifyById(int id, boolean update) {
+        selection = DELETE_NOTIFY_BY_ID;
+        this.update = update;
+        start();
+    }
+
     public List<Notify> loadAllNotifies() {
         selection = LOAD_ALL_NOTIFIES;
         start();
@@ -50,15 +58,9 @@ public class DatabaseAccess extends Thread implements NotifyDao {
     }
 
     @Override
-    public Notify getNotify(int id) {
-        this.id = id;
-        selection = LOAD_ALL_NOTIFIES;
-        start();
-        return null;
-    }
-
-    @Override
     public void run() {
+
+        if (weakReference.get() == null) return;
         switch (selection) {
             case ADD_NOTIFY :
                 NotifyDatabase.getInstance(weakReference.get()).notifyDao().addNotify(notify);
@@ -66,18 +68,26 @@ public class DatabaseAccess extends Thread implements NotifyDao {
             case DELETE_NOTIFY :
                 NotifyDatabase.getInstance(weakReference.get()).notifyDao().deleteNotify(notify);
                 break;
-            case GET_NOTIFY :
-                NotifyDatabase.getInstance(weakReference.get()).notifyDao().getNotify(id);
-                break;
             case LOAD_ALL_NOTIFIES :
-                List<Notify> notifies = NotifyDatabase.getInstance(weakReference.get()).notifyDao().loadAllNotifies();
-                weakReference.get().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        weakReference.get().updateList(notifies);
-                    }
-                });
+                update = true;
                 break;
+            case DELETE_NOTIFY_BY_ID :
+                Notify n = NotifyDatabase.getInstance(weakReference.get()).notifyDao().getNotify(id);
+                if (n != null) {
+                    NotifyDatabase.getInstance(weakReference.get()).notifyDao().deleteNotify(n);
+                }
+                break;
+        }
+
+        if (update) {
+            if (weakReference.get() == null) return;
+            List<Notify> notifies = NotifyDatabase.getInstance(weakReference.get()).notifyDao().loadAllNotifies();
+            weakReference.get().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    weakReference.get().updateList(notifies);
+                }
+            });
         }
     }
 }

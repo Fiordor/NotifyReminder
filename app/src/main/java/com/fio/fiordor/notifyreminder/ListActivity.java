@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.fio.fiordor.notifyreminder.customnotify.NotifyAdapter;
+import com.fio.fiordor.notifyreminder.database.NotifyDatabase;
 import com.fio.fiordor.notifyreminder.pojo.Notify;
 import com.fio.fiordor.notifyreminder.threads.DatabaseAccess;
 
@@ -33,12 +34,6 @@ public class ListActivity extends AppCompatActivity implements NotifyAdapter.OnI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        int notificationId = getIntent().getIntExtra("notify_id", -1);
-        if (notificationId != -1) {
-            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
-            notificationManagerCompat.cancel(notificationId);
-        }
-
         RecyclerView recyclerView = findViewById(R.id.rvNotifyList);
         RecyclerView.LayoutManager manager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(manager);
@@ -48,8 +43,18 @@ public class ListActivity extends AppCompatActivity implements NotifyAdapter.OnI
         recyclerView.setAdapter(adapter);
 
         DatabaseAccess access = new DatabaseAccess(this);
-        access.loadAllNotifies();
 
+        int notificationId = getIntent().getIntExtra("notify_id", -1);
+        if (notificationId == -1) {
+
+            access.loadAllNotifies();
+        } else {
+
+            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+            notificationManagerCompat.cancel(notificationId);
+
+            access.deleteNotifyById(notificationId, true);
+        }
     }
 
     public void createNewReminder(View view) {
@@ -91,9 +96,7 @@ public class ListActivity extends AppCompatActivity implements NotifyAdapter.OnI
                 Notify notify = adapter.getNotify(position);
 
                 DatabaseAccess databaseAccess = new DatabaseAccess((ListActivity) getParent());
-                databaseAccess.deleteNotify(notify);
-
-                adapter.remove(notify);
+                databaseAccess.deleteNotify(notify, true);
 
                 Toast.makeText(getBaseContext(), "borrado", Toast.LENGTH_SHORT).show();
             }
