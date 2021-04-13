@@ -8,8 +8,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.util.Log;
-import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -32,8 +30,6 @@ public class NotifyShow extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Log.d("tags", "entor");
-
         int id = intent.getIntExtra("id", -1);
         String title = intent.getStringExtra("title");
         String text = intent.getStringExtra("text");
@@ -50,45 +46,12 @@ public class NotifyShow extends BroadcastReceiver {
 
         createNotificationChannel(context);
 
-        PendingIntent resultPendingIntent = createPendingIntent(context);
+        PendingIntent resultPendingIntent = createPendingIntent(context, id);
 
         Notification notification = createNotification(context, resultPendingIntent, title, text);
 
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
         notificationManagerCompat.notify(id, notification);
-
-        //createNotificationFullScreen(context, id, title, text);
-
-    }
-
-    private void createNotificationFullScreen(Context context, int id, String title, String text) {
-
-        Intent fullScreenIntent = new Intent(context, ListActivity.class);
-        PendingIntent fullScreenPendingIntent = PendingIntent.getActivity(context, 0,
-                fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(context, CHANNEL_ID)
-                        .setSmallIcon(R.drawable.ic_baseline_check_24)
-                        .setContentTitle(title)
-                        .setContentText(text)
-                        .setPriority(NotificationCompat.PRIORITY_HIGH)
-                        .setCategory(NotificationCompat.CATEGORY_CALL)
-
-                        // Use a full-screen intent only for the highest-priority alerts where you
-                        // have an associated activity that you would like to launch after the user
-                        // interacts with the notification. Also, if your app targets Android 10
-                        // or higher, you need to request the USE_FULL_SCREEN_INTENT permission in
-                        // order for the platform to invoke this notification.
-                        .setFullScreenIntent(fullScreenPendingIntent, true);
-
-        Notification incomingCallNotification = notificationBuilder.build();
-
-        //context.startService()
-
-        // Provide a unique integer for the "notificationId" of each notification.
-        //context.startForeground(id, incomingCallNotification);
-
     }
 
     private Notification createNotification(Context context, PendingIntent pendingIntent, String title, String text) {
@@ -105,11 +68,12 @@ public class NotifyShow extends BroadcastReceiver {
         return builder.build();
     }
 
-    private PendingIntent createPendingIntent(Context context) {
+    private PendingIntent createPendingIntent(Context context, int id) {
 
         //define el intent que se ejecutará cuando se haga click sobre la notificación
         //el intent abrirá el main y se añadirá a la pila de activities para mejor experiencia de navegación
         Intent resultIntent = new Intent(context, ListActivity.class);
+        resultIntent.putExtra("notify_id", id);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         stackBuilder.addNextIntentWithParentStack(resultIntent);
         return  stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);

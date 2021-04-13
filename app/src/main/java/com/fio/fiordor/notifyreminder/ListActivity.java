@@ -1,14 +1,18 @@
 package com.fio.fiordor.notifyreminder;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -20,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListActivity extends AppCompatActivity implements NotifyAdapter.OnItemClickListener, NotifyAdapter.OnItemLongClickListener {
+    private final int RESULT_CREATE_ACTIVITY = 99;
 
     private NotifyAdapter adapter;
 
@@ -27,6 +32,12 @@ public class ListActivity extends AppCompatActivity implements NotifyAdapter.OnI
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        int notificationId = getIntent().getIntExtra("notify_id", -1);
+        if (notificationId != -1) {
+            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+            notificationManagerCompat.cancel(notificationId);
+        }
 
         RecyclerView recyclerView = findViewById(R.id.rvNotifyList);
         RecyclerView.LayoutManager manager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
@@ -43,11 +54,22 @@ public class ListActivity extends AppCompatActivity implements NotifyAdapter.OnI
 
     public void createNewReminder(View view) {
         Intent intent = new Intent(this, CreateActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, RESULT_CREATE_ACTIVITY);
     }
 
     public void updateList(List<Notify> notifyList) {
         adapter.updateNotifies(notifyList);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RESULT_CREATE_ACTIVITY && resultCode == Activity.RESULT_OK) {
+            DatabaseAccess access = new DatabaseAccess(this);
+            access.loadAllNotifies();
+        }
     }
 
     @Override
