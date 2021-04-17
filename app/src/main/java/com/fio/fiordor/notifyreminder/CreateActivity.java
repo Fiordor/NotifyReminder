@@ -11,17 +11,22 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.fio.fiordor.notifyreminder.customnotify.NotifyShow;
 import com.fio.fiordor.notifyreminder.pojo.Notify;
 import com.fio.fiordor.notifyreminder.threads.DatabaseAddNotify;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -33,7 +38,9 @@ public class CreateActivity extends AppCompatActivity {
     private EditText etTitle;
     private TextView tvDate;
     private TextView tvTime;
+    private Button btSelectRepeatEvery;
     private TextView tvRepeatEvery;
+    private SwitchMaterial swFixed;
     private EditText etText;
 
     private int dayOfMonth;
@@ -57,6 +64,8 @@ public class CreateActivity extends AppCompatActivity {
         tvTime = findViewById(R.id.tvTime);
         tvRepeatEvery = findViewById(R.id.tvRepeatEvery);
         etText = findViewById(R.id.etText);
+        btSelectRepeatEvery = findViewById(R.id.btSelectRepeatEvery);
+        swFixed = findViewById(R.id.swFixed);
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeZone.getDefault());
@@ -85,6 +94,13 @@ public class CreateActivity extends AppCompatActivity {
                     etTitle.setText("");
                     firstClick = true;
                 }
+            }
+        });
+
+        swFixed.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                btSelectRepeatEvery.setEnabled(!isChecked);
             }
         });
     }
@@ -156,7 +172,7 @@ public class CreateActivity extends AppCompatActivity {
 
         if (item.getItemId() == R.id.imJustSave) {
 
-            Notify notify = new Notify(etTitle.getText().toString(), year, month, dayOfMonth, hourOfDay, minute, repeatMinute, etText.getText().toString());
+            Notify notify = new Notify(etTitle.getText().toString(), year, month, dayOfMonth, hourOfDay, minute, swFixed.isChecked() ? -1 : repeatMinute, etText.getText().toString());
 
             DatabaseAddNotify add = new DatabaseAddNotify(this, notify);
             add.start();
@@ -169,6 +185,7 @@ public class CreateActivity extends AppCompatActivity {
             intent.putExtra("id", notify.getId());
             intent.putExtra("title", notify.getTitle());
             intent.putExtra("text", notify.getText());
+            intent.putExtra("repeatEvery", swFixed.isChecked() ? -1 : repeatMinute);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
 
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);

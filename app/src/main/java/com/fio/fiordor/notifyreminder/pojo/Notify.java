@@ -1,8 +1,13 @@
 package com.fio.fiordor.notifyreminder.pojo;
 
+import android.util.Log;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+
+import java.util.Calendar;
+import java.util.Date;
 
 @Entity(tableName = "notify_database")
 public class Notify {
@@ -42,7 +47,18 @@ public class Notify {
         this.repeatMinute = repeatMinute;
         this.text = text;
 
-        id = title.hashCode() + year + month + dayOfMonth;
+        Calendar calendarSchema = Calendar.getInstance();
+        calendarSchema.set(2020, 0, 0, 0, 0, 0);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, dayOfMonth, hour, minute, 0);
+
+        long millis = calendar.getTimeInMillis() - calendarSchema.getTimeInMillis();
+
+        millis = millis / 1000;
+        millis = millis / 60;
+
+        id = (int) millis;
     }
 
     public int getId() {

@@ -32,17 +32,17 @@ public class NotifyShow extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         int id = intent.getIntExtra("id", -1);
+        if (id == -1) { return; }
         String title = intent.getStringExtra("title");
         String text = intent.getStringExtra("text");
+        int repeatEvery = intent.getIntExtra("repeatEvery", 0);
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 Notify notify = NotifyDatabase.getInstance(context).notifyDao().getNotify(id);
                 if (notify != null) {
-                    Log.d("show", "show before");
                     NotifyDatabase.getInstance(context).notifyDao().deleteNotify(notify);
-                    Log.d("show", "show after");
                 }
             }
         }).start();
@@ -51,17 +51,17 @@ public class NotifyShow extends BroadcastReceiver {
 
         PendingIntent resultPendingIntent = createPendingIntent(context, id);
 
-        Notification notification = createNotification(context, resultPendingIntent, title, text);
+        Notification notification = createNotification(context, resultPendingIntent, title, text, repeatEvery);
 
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
         notificationManagerCompat.notify(id, notification);
     }
 
-    private Notification createNotification(Context context, PendingIntent pendingIntent, String title, String text) {
+    private Notification createNotification(Context context, PendingIntent pendingIntent, String title, String text, int repeatEvery) {
 
         //crea la notificación y se le asocia un intent
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_baseline_check_24)
+                .setSmallIcon(R.drawable.ic_baseline_notification_important_24)
                 .setContentTitle(title)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
@@ -71,7 +71,13 @@ public class NotifyShow extends BroadcastReceiver {
 
         builder.setContentIntent(pendingIntent);
 
-        return builder.build();
+        Notification notification = builder.build();
+
+        if (repeatEvery == -1) {
+            notification.flags |= Notification.FLAG_NO_CLEAR;
+        }
+
+        return notification;
     }
 
     private PendingIntent createPendingIntent(Context context, int id) {
