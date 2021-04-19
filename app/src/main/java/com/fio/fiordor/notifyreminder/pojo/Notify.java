@@ -58,6 +58,8 @@ public class Notify {
         millis = millis / 1000;
         millis = millis / 60;
 
+        millis = millis * 10;
+
         id = (int) millis;
     }
 
