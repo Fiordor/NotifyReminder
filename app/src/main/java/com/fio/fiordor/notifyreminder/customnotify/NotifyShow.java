@@ -12,6 +12,7 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.app.RemoteInput;
 import androidx.core.app.TaskStackBuilder;
 
 import com.fio.fiordor.notifyreminder.ListActivity;
@@ -59,6 +60,15 @@ public class NotifyShow extends BroadcastReceiver {
 
     private Notification createNotification(Context context, PendingIntent pendingIntent, String title, String text, int repeatEvery) {
 
+        String replyLabel = "some string";
+        RemoteInput remoteInput = new RemoteInput.Builder("key_text_reply").setLabel(replyLabel).build();
+
+        PendingIntent replyPendingIntent = PendingIntent.getBroadcast(context, 0, new Intent(context, NotifyReply.class), PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Action action = new NotificationCompat.Action.Builder(R.drawable.ic_baseline_reply_24, "label", replyPendingIntent)
+                .addRemoteInput(remoteInput)
+                .build();
+
         //crea la notificación y se le asocia un intent
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_baseline_notification_important_24)
@@ -69,7 +79,8 @@ public class NotifyShow extends BroadcastReceiver {
             builder.setContentText(text);
         }
 
-        builder.setContentIntent(pendingIntent);
+        builder.setContentIntent(pendingIntent)
+                .addAction(action);
 
         Notification notification = builder.build();
 

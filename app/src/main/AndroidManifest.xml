@@ -22,6 +22,7 @@
         </activity>
 
         <receiver android:name=".customnotify.NotifyShow" android:enabled="true" android:exported="true" />
+        <receiver android:name=".customnotify.NotifyReply" android:enabled="true" android:exported="true" />
     </application>
 
 </manifest>
