@@ -13,6 +13,15 @@ import com.fio.fiordor.notifyreminder.ListActivity;
 
 public class NotifyReply extends BroadcastReceiver {
 
+    /**
+     * Escucha de un broadcast lanzado a este objeto.
+     * El objetivo de esta clase es escuchar el RemoteInput de una notificación. Lo que hace es
+     * recuperar la información de la notificación y ver si el texto escrito es igualal que debía
+     * escribir y en caso de que lo sea abre la aplicación.
+     *
+     * @param context
+     * @param intent
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -29,6 +38,14 @@ public class NotifyReply extends BroadcastReceiver {
         }
     }
 
+    /**
+     * Recupera el mensaje del RemoteInput.
+     * Recordar que la key es la concatenación del título de la notificación con su id.
+     *
+     * @param intent
+     * @param key para recuperar el mensaje
+     * @return mensaje escrito en la notificación
+     */
     private String getMessageText(Intent intent, String key) {
         Bundle remoteInput = RemoteInput.getResultsFromIntent(intent);
         if (remoteInput != null) {

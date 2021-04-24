@@ -7,6 +7,14 @@ import android.net.Uri;
 
 public class NotifyUrl extends BroadcastReceiver {
 
+    /**
+     * Escucha de un broadcast lanzado a este objeto.
+     * El objetivo de esta clase es abrir el navegador con la página de la wiki que se le pasa por
+     * el intent.
+     *
+     * @param context
+     * @param intent
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
 
