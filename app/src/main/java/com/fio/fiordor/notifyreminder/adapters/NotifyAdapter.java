@@ -1,4 +1,4 @@
-package com.fio.fiordor.notifyreminder.customnotify;
+package com.fio.fiordor.notifyreminder.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;

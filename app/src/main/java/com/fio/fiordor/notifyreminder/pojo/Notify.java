@@ -35,9 +35,14 @@ public class Notify {
     private int repeatMinute;
 
     @ColumnInfo
+    private String replyText;
+
+    @ColumnInfo
     private String text;
 
-    public Notify(String title, int year, int month, int dayOfMonth, int hour, int minute, int repeatMinute, String text) {
+    public Notify(int id, String title, int year, int month, int dayOfMonth, int hour, int minute, int repeatMinute, String replyText, String text) {
+
+        this.id = id;
         this.title = title;
         this.year = year;
         this.month = month;
@@ -45,22 +50,8 @@ public class Notify {
         this.hour = hour;
         this.minute = minute;
         this.repeatMinute = repeatMinute;
+        this.replyText = replyText;
         this.text = text;
-
-        Calendar calendarSchema = Calendar.getInstance();
-        calendarSchema.set(2020, 0, 0, 0, 0, 0);
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month, dayOfMonth, hour, minute, 0);
-
-        long millis = calendar.getTimeInMillis() - calendarSchema.getTimeInMillis();
-
-        millis = millis / 1000;
-        millis = millis / 60;
-
-        millis = millis * 10;
-
-        id = (int) millis;
     }
 
     public int getId() {
@@ -125,6 +116,14 @@ public class Notify {
 
     public void setRepeatMinute(int repeatMinute) {
         this.repeatMinute = repeatMinute;
+    }
+
+    public String getReplyText() {
+        return replyText;
+    }
+
+    public void setReplyText(String replyText) {
+        this.replyText = replyText;
     }
 
     public String getText() {

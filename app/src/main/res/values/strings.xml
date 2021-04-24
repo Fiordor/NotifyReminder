@@ -18,4 +18,9 @@
 
     <string name="save">Save</string>
 
+    <string name="notify_for_reminder">Notify for reminder</string>
+    <string name="notify_for_reminder_summary">Notify for remind user anything</string>
+    <string name="reply_text">Reply text</string>
+    <string name="open_wiki">Open wiki</string>
+
 </resources>
