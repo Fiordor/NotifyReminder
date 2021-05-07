@@ -25,7 +25,7 @@ import com.fio.fiordor.notifyreminder.pojo.Wiki;
 
 public class NotifyShow extends BroadcastReceiver {
 
-    private final String CHANNEL_ID = "notify_channel_id";
+    public static final String CHANNEL_ID = "notify_channel_id";
 
     /**
      * Escucha de un broadcast lanzado a este objeto.
@@ -37,6 +37,8 @@ public class NotifyShow extends BroadcastReceiver {
      */
     @Override
     public void onReceive(Context context, Intent intent) {
+
+        context.getSystemService(Context.ALARM_SERVICE);
 
         int id = intent.getIntExtra("id", -1);
         if (id == -1) { return; }

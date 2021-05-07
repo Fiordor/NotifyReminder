@@ -2,6 +2,7 @@ package com.fio.fiordor.notifyreminder;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -27,7 +28,6 @@ import com.fio.fiordor.notifyreminder.pojo.Notify;
 import com.fio.fiordor.notifyreminder.pojo.Wiki;
 import com.fio.fiordor.notifyreminder.threads.DatabaseAddNotify;
 import com.fio.fiordor.notifyreminder.threads.GetHTML;
-import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -40,8 +40,8 @@ public class CreateActivity extends AppCompatActivity {
     private TextView tvTime;
     private Button btSelectRepeatEvery;
     private TextView tvRepeatEvery;
-    private SwitchMaterial swFixed;
-    private SwitchMaterial swReply;
+    private SwitchCompat swFixed;
+    private SwitchCompat swReply;
     private EditText etText;
 
     private int dayOfMonth;

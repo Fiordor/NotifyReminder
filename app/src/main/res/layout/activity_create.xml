@@ -125,14 +125,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
+        <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/swFixed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/fixed"
             android:textAlignment="textEnd" />
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
+        <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/swReply"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

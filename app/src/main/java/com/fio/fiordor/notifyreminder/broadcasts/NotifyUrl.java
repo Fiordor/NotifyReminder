@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 
 public class NotifyUrl extends BroadcastReceiver {
 
@@ -21,6 +22,10 @@ public class NotifyUrl extends BroadcastReceiver {
         String url = intent.getStringExtra("url");
 
         if (url != null) {
+
+            Intent closeNotificationPanelIntent = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+            context.sendBroadcast(closeNotificationPanelIntent);
+
             Intent openUrl = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             openUrl.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(openUrl);
